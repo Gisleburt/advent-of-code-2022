@@ -1,23 +1,28 @@
+use std::fmt::Debug;
 use std::io::BufRead;
 use std::marker::PhantomData;
+use std::str::FromStr;
 
 /// Takes a buffer and breaks it into parts based on blank lines
-pub struct GroupedInput<T, R: BufRead>{
+pub struct GroupedInput<T, R: BufRead> {
     read: R,
-    phantom_data: PhantomData<T>
+    phantom_data: PhantomData<T>,
 }
 
 impl<R: BufRead> From<R> for GroupedInput<usize, R> {
     fn from(read: R) -> Self {
         GroupedInput {
             read,
-            phantom_data: PhantomData
+            phantom_data: PhantomData,
         }
     }
 }
 
-impl<R: BufRead> Iterator for GroupedInput<usize, R> {
-    type Item = Vec<usize>; // ToDo: Can we nest an iterator so we don't have to alloc here
+impl<F: FromStr, R: BufRead> Iterator for GroupedInput<F, R>
+where
+    F::Err: Debug,
+{
+    type Item = Vec<F>; // ToDo: Can we nest an iterator so we don't have to alloc here
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut group = Vec::new();
