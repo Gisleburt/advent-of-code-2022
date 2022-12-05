@@ -5,6 +5,7 @@ use structopt::StructOpt;
 enum Opt {
     D01p1,
     D01p2,
+    D02p1,
 }
 
 fn main() {
@@ -12,6 +13,7 @@ fn main() {
     let output = match opt {
         Opt::D01p1 => d01p1(),
         Opt::D01p2 => d01p2(),
+        Opt::D02p1 => d02p1(),
     };
     println!("{}", output)
 }
