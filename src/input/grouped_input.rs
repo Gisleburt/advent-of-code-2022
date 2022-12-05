@@ -4,12 +4,13 @@ use std::marker::PhantomData;
 use std::str::FromStr;
 
 /// Takes a buffer and breaks it into parts based on blank lines
-pub struct GroupedInput<T, R: BufRead> {
+pub struct GroupedInput<F, R: BufRead> {
     read: R,
-    phantom_data: PhantomData<T>,
+    phantom_data: PhantomData<F>,
 }
 
-impl<R: BufRead> From<R> for GroupedInput<usize, R> {
+/// Converts any BufRead to a Grouped Input
+impl<F, R: BufRead> From<R> for GroupedInput<F, R> {
     fn from(read: R) -> Self {
         GroupedInput {
             read,
@@ -18,6 +19,7 @@ impl<R: BufRead> From<R> for GroupedInput<usize, R> {
     }
 }
 
+/// Reads the buffer into groups of Vec's breaking on blank lines
 impl<F: FromStr, R: BufRead> Iterator for GroupedInput<F, R>
 where
     F::Err: Debug,
