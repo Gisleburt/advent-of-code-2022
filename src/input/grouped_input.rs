@@ -1,15 +1,22 @@
 use std::io::BufRead;
+use std::marker::PhantomData;
 
 /// Takes a buffer and breaks it into parts based on blank lines
-pub struct UsizeGroupedInput<R: BufRead>(R);
+pub struct GroupedInput<T, R: BufRead>{
+    read: R,
+    phantom_data: PhantomData<T>
+}
 
-impl<R: BufRead> From<R> for UsizeGroupedInput<R> {
+impl<R: BufRead> From<R> for GroupedInput<usize, R> {
     fn from(read: R) -> Self {
-        UsizeGroupedInput(read)
+        GroupedInput {
+            read,
+            phantom_data: PhantomData
+        }
     }
 }
 
-impl<R: BufRead> Iterator for UsizeGroupedInput<R> {
+impl<R: BufRead> Iterator for GroupedInput<usize, R> {
     type Item = Vec<usize>; // ToDo: Can we nest an iterator so we don't have to alloc here
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -17,7 +24,7 @@ impl<R: BufRead> Iterator for UsizeGroupedInput<R> {
 
         loop {
             let mut buffer = String::with_capacity(8);
-            self.0
+            self.read
                 .read_line(&mut buffer)
                 .expect("Failed to read from buffer");
             let trimmed = buffer.trim();

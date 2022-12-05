@@ -1,1 +1,1 @@
-pub mod usize_grouped_input;
+pub mod grouped_input;
