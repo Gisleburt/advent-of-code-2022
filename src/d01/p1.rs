@@ -1,6 +1,6 @@
 use crate::input::grouped_input::GroupedInput;
 
-pub fn d01p1() -> String {
+pub fn run() -> String {
     let stdin = std::io::stdin();
     let input = GroupedInput::from(stdin.lock());
     let max = input

@@ -1,5 +1,4 @@
 use std::convert::TryFrom;
-use std::str::FromStr;
 
 #[derive(Copy, Clone, Debug)]
 pub enum GameResult {
@@ -9,11 +8,43 @@ pub enum GameResult {
 }
 
 impl GameResult {
+    pub fn play(&self) -> RockPaperScissors {
+        match self {
+            GameResult::Win(play) => *play,
+            GameResult::Draw(play) => *play,
+            GameResult::Loss(play) => *play,
+        }
+    }
+
     pub fn score(&self) -> usize {
         match self {
             GameResult::Win(play) => 6 + play.score(),
             GameResult::Draw(play) => 3 + play.score(),
             GameResult::Loss(play) => play.score(),
+        }
+    }
+
+    pub fn from_result_char(result_char: char, other: RockPaperScissors) -> Result<Self, String> {
+        match result_char {
+            // Lose
+            'X' => match other {
+                RockPaperScissors::Rock => Ok(GameResult::Loss(RockPaperScissors::Scissors)),
+                RockPaperScissors::Paper => Ok(GameResult::Loss(RockPaperScissors::Rock)),
+                RockPaperScissors::Scissors => Ok(GameResult::Loss(RockPaperScissors::Paper)),
+            },
+            // Draw
+            'Y' => match other {
+                RockPaperScissors::Rock => Ok(GameResult::Draw(RockPaperScissors::Rock)),
+                RockPaperScissors::Paper => Ok(GameResult::Draw(RockPaperScissors::Paper)),
+                RockPaperScissors::Scissors => Ok(GameResult::Draw(RockPaperScissors::Scissors)),
+            },
+            // Win
+            'Z' => match other {
+                RockPaperScissors::Rock => Ok(GameResult::Win(RockPaperScissors::Paper)),
+                RockPaperScissors::Paper => Ok(GameResult::Win(RockPaperScissors::Scissors)),
+                RockPaperScissors::Scissors => Ok(GameResult::Win(RockPaperScissors::Rock)),
+            },
+            _ => Err(format!("'{}' is not a valid option for Rock Paper Scissors result", result_char)),
         }
     }
 }
@@ -72,19 +103,31 @@ pub struct RockPaperScissorsGame {
     mine: RockPaperScissors,
 }
 
-impl FromStr for RockPaperScissorsGame {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+impl RockPaperScissorsGame {
+    pub fn from_play_str(s: &str) -> Result<Self, String> {
         if s.chars().count() > 3 {
             Err(format!("Invalid string length, expect 3 go {}: '{}'", s.len(), s))
-        }
-        else if s.chars().nth(1) != Some(' ') {
+        } else if s.chars().nth(1) != Some(' ') {
             Err(format!("Invalid string, expected space in center, got {}", s))
-        }
-        else {
+        } else {
             let theirs = s.chars().next().unwrap().try_into()?;
             let mine = s.chars().nth(2).unwrap().try_into()?;
+            Ok(Self {
+                theirs,
+                mine,
+            })
+        }
+    }
+
+    pub fn from_results_str(s: &str) -> Result<Self, String> {
+        if s.chars().count() > 3 {
+            Err(format!("Invalid string length, expect 3 go {}: '{}'", s.len(), s))
+        } else if s.chars().nth(1) != Some(' ') {
+            Err(format!("Invalid string, expected space in center, got {}", s))
+        } else {
+            let theirs = s.chars().next().unwrap().try_into()?;
+            let result_char = s.chars().nth(2).unwrap();
+            let mine = GameResult::from_result_char(result_char, theirs)?.play();
             Ok(Self {
                 theirs,
                 mine,
@@ -110,9 +153,20 @@ mod tests {
         let input = Cursor::new("A Y\nB X\nC Z");
         let input = StringIter::<String, _>::from(input);
         let score: usize = input
-            .map(|s| RockPaperScissorsGame::from_str(&s).unwrap())
+            .map(|s| RockPaperScissorsGame::from_play_str(&s).unwrap())
             .map(|g| g.score())
             .sum();
         assert_eq!(score, 15)
+    }
+
+    #[test]
+    fn test_d02p2_example() {
+        let input = Cursor::new("A Y\nB X\nC Z");
+        let input = StringIter::<String, _>::from(input);
+        let score: usize = input
+            .map(|s| RockPaperScissorsGame::from_results_str(&s).unwrap())
+            .map(|g| g.score())
+            .sum();
+        assert_eq!(score, 12)
     }
 }

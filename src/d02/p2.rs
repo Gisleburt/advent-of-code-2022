@@ -5,7 +5,7 @@ pub fn run() -> String {
     let stdin = std::io::stdin();
     let input = StringIter::<String, _>::from(stdin.lock());
     let score: usize = input
-        .map(|s| RockPaperScissorsGame::from_play_str(&s).unwrap())
+        .map(|s| RockPaperScissorsGame::from_results_str(&s).unwrap())
         .map(|g| g.score())
         .sum();
     format!("{}", score)
