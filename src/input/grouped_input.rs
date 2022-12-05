@@ -9,7 +9,17 @@ pub struct GroupedInput<F, R: BufRead> {
     phantom_data: PhantomData<F>,
 }
 
-/// Converts any BufRead to a Grouped Input
+/// Converts any BufRead to a Grouped Input.
+///
+/// Note, unless Rust can infer `F`, you'll need to specify it
+///
+/// ```rust
+/// use std::io::Cursor;
+/// use advent_of_code_2022::input::grouped_input::GroupedInput;
+///
+/// let raw = Cursor::new("123\n456\n\n789");
+/// let mut input = GroupedInput::<usize, _>::from(raw);
+/// ```
 impl<F, R: BufRead> From<R> for GroupedInput<F, R> {
     fn from(read: R) -> Self {
         GroupedInput {
@@ -20,6 +30,17 @@ impl<F, R: BufRead> From<R> for GroupedInput<F, R> {
 }
 
 /// Reads the buffer into groups of Vec's breaking on blank lines
+///
+/// ```rust
+/// use std::io::Cursor;
+/// use advent_of_code_2022::input::grouped_input::GroupedInput;
+///
+/// let raw = Cursor::new("123\n456\n\n789");
+/// let mut input = GroupedInput::from(raw);
+/// assert_eq!(input.next(), Some(vec![123, 456]));
+/// assert_eq!(input.next(), Some(vec![789]));
+/// assert_eq!(input.next(), None);
+/// ```
 impl<F: FromStr, R: BufRead> Iterator for GroupedInput<F, R>
 where
     F::Err: Debug,
