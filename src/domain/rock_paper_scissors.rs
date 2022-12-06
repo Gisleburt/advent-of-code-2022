@@ -156,31 +156,3 @@ impl RockPaperScissorsGame {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::input::string_iter::StringIter;
-    use std::io::Cursor;
-
-    #[test]
-    fn test_d02p1_example() {
-        let input = Cursor::new("A Y\nB X\nC Z");
-        let input = StringIter::<String, _>::from(input);
-        let score: usize = input
-            .map(|s| RockPaperScissorsGame::from_play_str(&s).unwrap())
-            .map(|g| g.score())
-            .sum();
-        assert_eq!(score, 15)
-    }
-
-    #[test]
-    fn test_d02p2_example() {
-        let input = Cursor::new("A Y\nB X\nC Z");
-        let input = StringIter::<String, _>::from(input);
-        let score: usize = input
-            .map(|s| RockPaperScissorsGame::from_results_str(&s).unwrap())
-            .map(|g| g.score())
-            .sum();
-        assert_eq!(score, 12)
-    }
-}

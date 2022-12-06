@@ -45,8 +45,8 @@ impl From<char> for ItemType {
 ///
 /// # fn main() -> Result<(), String> {
 /// let rucksack = Rucksack::from_str("abcd")?;
-/// assert_eq!(rucksack.left(), &['a'.try_into()?, 'b'.try_into()?]);
-/// assert_eq!(rucksack.right(), &['c'.try_into()?, 'd'.try_into()?]);
+/// assert_eq!(rucksack.left(), &['a'.into(), 'b'.into()]);
+/// assert_eq!(rucksack.right(), &['c'.into(), 'd'.into()]);
 /// # Ok(())
 /// # }
 /// ```
@@ -149,41 +149,5 @@ impl GroupRucksacks {
 impl From<Vec<Rucksack>> for GroupRucksacks {
     fn from(v: Vec<Rucksack>) -> Self {
         Self(v)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::input::string_iter::StringIter;
-    use std::io::Cursor;
-
-    #[test]
-    fn test_d03p1_example() {
-        let input = Cursor::new("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw");
-        let iter = StringIter::<String, _>::from(input);
-        let rucksacks: Result<Vec<_>, _> = iter.map(|r| Rucksack::from_str(&r)).collect();
-        let sum: usize = rucksacks
-            .unwrap()
-            .iter()
-            .map(|rs| rs.clashing_priority_value())
-            .sum();
-        assert_eq!(sum, 157)
-    }
-
-    #[test]
-    fn test_d03p2_example() {
-        let input = Cursor::new("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw");
-        let iter = StringIter::<String, _>::from(input);
-        let mut rucksacks = iter.map(|r| Rucksack::from_str(&r).unwrap()).peekable();
-        let mut groups = vec![];
-        while rucksacks.peek().is_some() {
-            groups.push(GroupRucksacks::from(
-                rucksacks.by_ref().take(3).collect::<Vec<_>>(),
-            ))
-        }
-
-        let sum: usize = groups.iter().map(|rs| rs.find_badge().priority()).sum();
-        assert_eq!(sum, 70)
     }
 }

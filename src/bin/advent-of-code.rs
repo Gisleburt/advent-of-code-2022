@@ -11,14 +11,16 @@ enum Opt {
 }
 
 fn main() {
+    let stdin = std::io::stdin();
+    let lock = stdin.lock();
     let opt = Opt::from_args();
     let output = match opt {
-        Opt::D01p1 => advent_of_code_2022::d01::p1::run(),
-        Opt::D01p2 => advent_of_code_2022::d01::p2::run(),
-        Opt::D02p1 => advent_of_code_2022::d02::p1::run(),
-        Opt::D02p2 => advent_of_code_2022::d02::p2::run(),
-        Opt::D03p1 => advent_of_code_2022::d03::p1::run(),
-        Opt::D03p2 => advent_of_code_2022::d03::p2::run(),
+        Opt::D01p1 => advent_of_code_2022::d01::p1::run(lock),
+        Opt::D01p2 => advent_of_code_2022::d01::p2::run(lock),
+        Opt::D02p1 => advent_of_code_2022::d02::p1::run(lock),
+        Opt::D02p2 => advent_of_code_2022::d02::p2::run(lock),
+        Opt::D03p1 => advent_of_code_2022::d03::p1::run(lock),
+        Opt::D03p2 => advent_of_code_2022::d03::p2::run(lock),
     };
     println!("{}", output)
 }
