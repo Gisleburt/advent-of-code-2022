@@ -9,14 +9,14 @@ impl ItemType {
     /// use advent_of_code_2022::domain::rucksack::ItemType;
     /// # fn main() -> Result<(), String> {
     /// // a - z is valued 1 - 26
-    /// let lower_a = ItemType::try_from('a')?;
-    /// let lower_z = ItemType::try_from('z')?;
+    /// let lower_a = ItemType::from('a');
+    /// let lower_z = ItemType::from('z');
     /// assert_eq!(lower_a.priority(), 1);
     /// assert_eq!(lower_z.priority(), 26);
     ///
     /// // A - Z is valued 27 - 52
-    /// let upper_a = ItemType::try_from('A')?;
-    /// let upper_z = ItemType::try_from('Z')?;
+    /// let upper_a = ItemType::from('A');
+    /// let upper_z = ItemType::from('Z');
     /// assert_eq!(upper_a.priority(), 27);
     /// assert_eq!(upper_z.priority(), 52);
     /// # Ok(())
@@ -27,14 +27,12 @@ impl ItemType {
     }
 }
 
-impl TryFrom<char> for ItemType {
-    type Error = String;
-
-    fn try_from(c: char) -> Result<Self, Self::Error> {
+impl From<char> for ItemType {
+    fn from(c: char) -> Self {
         match c {
-            'A'..='Z' => Ok(Self((c as usize) - 38)),
-            'a'..='z' => Ok(Self((c as usize) - 96)),
-            _ => Err(format!("Expected letter, got '{}'", c)),
+            'A'..='Z' => Self((c as usize) - 38),
+            'a'..='z' => Self((c as usize) - 96),
+            _ => Self(0),
         }
     }
 }
@@ -61,6 +59,19 @@ impl Rucksack {
 
     pub fn right(&self) -> &[ItemType] {
         &self.1
+    }
+
+    pub fn unique_items(&self) -> Vec<ItemType> {
+        let mut v = Vec::with_capacity(2 * self.left().len());
+        v.extend_from_slice(self.left());
+        v.extend_from_slice(self.right());
+        v.sort();
+        v.dedup();
+        v
+    }
+
+    pub fn contains(&self, i: &ItemType) -> bool {
+        self.left().contains(i) || self.right().contains(i)
     }
 
     /// Stores items of item type. Evenly splits items into two compartments
@@ -108,14 +119,36 @@ impl FromStr for Rucksack {
         } else {
             let (c1, c2) = s.split_at(s.len() / 2);
             Ok(Self(
-                c1.chars()
-                    .map(|c| c.try_into())
-                    .collect::<Result<Vec<_>, _>>()?,
-                c2.chars()
-                    .map(|c| c.try_into())
-                    .collect::<Result<Vec<_>, _>>()?,
+                c1.chars().map(|c| c.into()).collect::<Vec<_>>(),
+                c2.chars().map(|c| c.into()).collect::<Vec<_>>(),
             ))
         }
+    }
+}
+
+pub struct GroupRucksacks(Vec<Rucksack>);
+
+impl GroupRucksacks {
+    pub fn find_badge(&self) -> ItemType {
+        let mut iter = self.0.iter();
+        let mut remaining_items = iter
+            .next()
+            .expect("Called find_badge on empty group")
+            .unique_items();
+        for next in iter {
+            remaining_items.retain(|i| next.contains(i));
+        }
+        if remaining_items.len() == 1 {
+            remaining_items[0]
+        } else {
+            panic!("More than one item remained")
+        }
+    }
+}
+
+impl From<Vec<Rucksack>> for GroupRucksacks {
+    fn from(v: Vec<Rucksack>) -> Self {
+        Self(v)
     }
 }
 
@@ -136,5 +169,21 @@ mod tests {
             .map(|rs| rs.clashing_priority_value())
             .sum();
         assert_eq!(sum, 157)
+    }
+
+    #[test]
+    fn test_d03p2_example() {
+        let input = Cursor::new("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw");
+        let iter = StringIter::<String, _>::from(input);
+        let mut rucksacks = iter.map(|r| Rucksack::from_str(&r).unwrap()).peekable();
+        let mut groups = vec![];
+        while rucksacks.peek().is_some() {
+            groups.push(GroupRucksacks::from(
+                rucksacks.by_ref().take(3).collect::<Vec<_>>(),
+            ))
+        }
+
+        let sum: usize = groups.iter().map(|rs| rs.find_badge().priority()).sum();
+        assert_eq!(sum, 70)
     }
 }

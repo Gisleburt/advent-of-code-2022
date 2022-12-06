@@ -1,6 +1,6 @@
-use std::str::FromStr;
 use crate::domain::rucksack::Rucksack;
 use crate::input::string_iter::StringIter;
+use std::str::FromStr;
 
 pub fn run() -> String {
     let stdin = std::io::stdin();
