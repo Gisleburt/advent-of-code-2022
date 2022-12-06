@@ -7,13 +7,13 @@ Each solution is run by specifying its name. To run the solutions you need to pr
 input on stdin.
 
 ```shell
-$ cargo run -- d<day>p<part> < d<day>p<part>.txt
+$ cargo run -- d<day>p<part> < d<day>.txt
 ```
 
 For example, day 5, part 2 would be
 
 ```shell
-$ cargo run -- d05p2 < d05p02.txt
+$ cargo run -- d05p2 < d05.txt
 ```
 
 Working Solutions:

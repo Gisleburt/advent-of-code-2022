@@ -18,13 +18,13 @@ pub struct StringIter<F, R: BufRead> {
 /// use advent_of_code_2022::input::string_iter::StringIter;
 ///
 /// let raw = Cursor::new("123\n456\n\n789");
-/// let mut input = StringIter::from(raw);
+/// let mut input = StringIter::<usize, _>::from(raw);
 /// ```
 impl<F, R: BufRead> From<R> for StringIter<F, R> {
     fn from(read: R) -> Self {
         StringIter {
             read,
-            phantom_data: PhantomData
+            phantom_data: PhantomData,
         }
     }
 }
@@ -35,16 +35,16 @@ impl<F, R: BufRead> From<R> for StringIter<F, R> {
 /// use std::io::Cursor;
 /// use advent_of_code_2022::input::string_iter::StringIter;
 ///
-/// let raw = Cursor::new("123\n456\n\n789");
+/// let raw = Cursor::new("123\n456\n789");
 /// let mut input = StringIter::from(raw);
-/// assert_eq!(input.next(), Some("123".to_string()));
-/// assert_eq!(input.next(), Some("456".to_string()));
-/// assert_eq!(input.next(), Some("789".to_string()));
+/// assert_eq!(input.next(), Some(123));
+/// assert_eq!(input.next(), Some(456));
+/// assert_eq!(input.next(), Some(789));
 /// assert_eq!(input.next(), None);
 /// ```
 impl<F: FromStr, R: BufRead> Iterator for StringIter<F, R>
-    where
-        F::Err: Debug,
+where
+    F::Err: Debug,
 {
     type Item = F; // ToDo: Can we nest an iterator so we don't have to alloc here
 
