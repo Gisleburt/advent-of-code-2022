@@ -1,6 +1,6 @@
-use std::io::BufRead;
 use crate::domain::rock_paper_scissors::RockPaperScissorsGame;
 use crate::input::string_iter::StringIter;
+use std::io::BufRead;
 
 pub fn run<R: BufRead>(buf_read: R) -> String {
     let input = StringIter::<String, _>::from(buf_read);
@@ -13,12 +13,12 @@ pub fn run<R: BufRead>(buf_read: R) -> String {
 
 #[cfg(test)]
 mod tests {
-    use std::io::Cursor;
     use super::*;
+    use std::io::Cursor;
 
     #[test]
     fn test_run() {
-        let input = Cursor::new("A Y\nB X\nC Z");
+        let input = Cursor::new(include_str!("test-input.txt"));
         let output = run(input);
         assert_eq!(&output, "15")
     }

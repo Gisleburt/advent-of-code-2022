@@ -155,4 +155,3 @@ impl RockPaperScissorsGame {
         self.mine.compare(self.theirs).score()
     }
 }
-

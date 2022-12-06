@@ -1,6 +1,6 @@
-use std::io::BufRead;
 use crate::domain::rucksack::Rucksack;
 use crate::input::string_iter::StringIter;
+use std::io::BufRead;
 use std::str::FromStr;
 
 pub fn run<R: BufRead>(buf_read: R) -> String {
@@ -16,12 +16,12 @@ pub fn run<R: BufRead>(buf_read: R) -> String {
 
 #[cfg(test)]
 mod tests {
-    use std::io::Cursor;
     use super::*;
+    use std::io::Cursor;
 
     #[test]
     fn test_run() {
-        let input = Cursor::new("vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw");
+        let input = Cursor::new(include_str!("test-input.txt"));
         let output = run(input);
         assert_eq!(&output, "157");
     }
