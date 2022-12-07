@@ -18,7 +18,7 @@ impl FromStr for Move {
     /// Parses a string instruction
     /// ```rust
     /// use std::str::FromStr;
-    /// use advent_of_code_2022::domain::crane::Move;
+    /// use advent_of_code_2022::domain::crane9001::Move;
     ///
     /// # fn main() -> Result<(), String> {
     /// let m = Move::from_str("move 1 from 2 to 3")?;
@@ -77,11 +77,11 @@ impl Deref for Stack {
 impl Stack {
     /// Take the top `n` items but keep the order the same
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stack;
+    /// use advent_of_code_2022::domain::crane9001::Stack;
     ///
     /// # fn main() -> Result<(), String> {
     /// let mut stack = Stack::from(vec!['1', '2', '3', '4', '5', '6']);
-    /// assert_eq!(stack.take(3), vec!['6', '5', '4']);
+    /// assert_eq!(stack.take(3), vec!['4', '5', '6']);
     /// # Ok(())
     /// # }
     /// ```
@@ -91,13 +91,12 @@ impl Stack {
         for removed_element in self.0.drain(new_len..) {
             removed.push(removed_element);
         }
-        removed.reverse();
         removed
     }
 
     /// Places items on top of the stack
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stack;
+    /// use advent_of_code_2022::domain::crane9001::Stack;
     /// use std::ops::Deref;
     ///
     /// # fn main() -> Result<(), String> {
@@ -113,7 +112,7 @@ impl Stack {
 
     /// Gets the crate on the top of the stack without removing it
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stack;
+    /// use advent_of_code_2022::domain::crane9001::Stack;
     /// use std::ops::Deref;
     ///
     /// # fn main() -> Result<(), String> {
@@ -140,12 +139,12 @@ pub struct Stacks(Vec<Stack>);
 impl Stacks {
     /// Gets the message from the top crate of each stack
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::{Move, Stack, Stacks};
+    /// use advent_of_code_2022::domain::crane9001::{Move, Stack, Stacks};
     /// use std::ops::Deref;
     ///
     /// # fn main() -> Result<(), String> {
     /// let mut stacks = Stacks::from(vec![
-    ///     Stack::from(vec!['y', 's', 'e']),
+    ///     Stack::from(vec!['y', 'e', 's']),
     ///     Stack::from(vec![]),
     /// ]);
     ///
@@ -174,11 +173,11 @@ impl Stacks {
 
     /// Gets the message from the top crate of each stack
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stack;
+    /// use advent_of_code_2022::domain::crane9001::Stack;
     /// use std::ops::Deref;
     ///
     /// # fn main() -> Result<(), String> {
-    /// use advent_of_code_2022::domain::crane::Stacks;
+    /// use advent_of_code_2022::domain::crane9001::Stacks;
     /// let stacks = vec![
     ///     Stack::from(vec!['f', 'g', 'h']),
     ///     Stack::from(vec!['d', 'e']),
@@ -197,10 +196,10 @@ impl Stacks {
 
     /// Returns the size of the largest stack
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stack;
+    /// use advent_of_code_2022::domain::crane9001::Stack;
     ///
     /// # fn main() -> Result<(), String> {
-    /// use advent_of_code_2022::domain::crane::Stacks;
+    /// use advent_of_code_2022::domain::crane9001::Stacks;
     /// let stacks = vec![
     ///     Stack::from(vec!['f', 'g', 'h']),
     ///     Stack::from(vec!['d', 'e']),
@@ -227,7 +226,7 @@ impl From<Vec<Stack>> for Stacks {
 impl From<Vec<String>> for Stacks {
     /// Converts a string into stacks
     /// ```rust
-    /// use advent_of_code_2022::domain::crane::Stacks;
+    /// use advent_of_code_2022::domain::crane9001::Stacks;
     /// let input = vec![
     ///     "    [O]".to_string(),
     ///     "[W] [C]".to_string(),

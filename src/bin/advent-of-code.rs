@@ -11,6 +11,7 @@ enum Opt {
     D04p1,
     D04p2,
     D05p1,
+    D05p2,
 }
 
 fn main() {
@@ -27,6 +28,7 @@ fn main() {
         Opt::D04p1 => advent_of_code_2022::d04::p1::run(lock),
         Opt::D04p2 => advent_of_code_2022::d04::p2::run(lock),
         Opt::D05p1 => advent_of_code_2022::d05::p1::run(lock),
+        Opt::D05p2 => advent_of_code_2022::d05::p2::run(lock),
     };
     println!("{}", output)
 }

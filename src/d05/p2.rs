@@ -1,6 +1,6 @@
 use std::io::BufRead;
 use std::str::FromStr;
-use crate::domain::crane9000::{Instruction, Stacks};
+use crate::domain::crane9001::{Instruction, Stacks};
 use crate::input::grouped_input_raw::GroupedInputRaw;
 
 pub fn run<R: BufRead>(buf_read: R) -> String {
@@ -25,6 +25,6 @@ mod tests {
     fn test_run() {
         let input = Cursor::new(include_str!("test-input.txt"));
         let output = run(input);
-        assert_eq!(&output, "CMZ");
+        assert_eq!(&output, "MCD");
     }
 }
