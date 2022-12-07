@@ -28,7 +28,29 @@ impl Search {
                 return false;
             }
         }
-        return true;
+        true
+    }
+    /// Can compares with another search area to see if this one completely contains the other
+    ///
+    /// ```rust
+    /// use std::str::FromStr;
+    /// use advent_of_code_2022::domain::search_party::Search;
+    ///
+    /// # fn main() -> Result<(), String> {
+    /// let first = Search::from_str("3-5")?;
+    /// let second = Search::from_str("5-6")?;
+    /// assert_eq!(first.overlaps(&second), true);
+    /// assert_eq!(second.overlaps(&first), true);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn overlaps(&self, other: &Search) -> bool {
+        for i in other.0.clone() {
+            if self.0.contains(&i) {
+                return true;
+            }
+        }
+        false
     }
 }
 
@@ -72,6 +94,25 @@ impl SearchPair {
     /// ```
     pub fn contains_complete_overlap(&self) -> bool {
         self.0.contains_completely(&self.1) || self.1.contains_completely(&self.0)
+    }
+
+    /// Checks if a pair of search areas overlaps at all
+    ///
+    /// ```rust
+    /// use std::str::FromStr;
+    /// use advent_of_code_2022::domain::search_party::SearchPair;
+    ///
+    /// # fn main() -> Result<(), String> {
+    /// let pair1 = SearchPair::from_str("3-5,5-6")?;
+    /// assert_eq!(pair1.contains_overlap(), true);
+    ///
+    /// let pair2 = SearchPair::from_str("100-100,200-200")?;
+    /// assert_eq!(pair2.contains_overlap(), false);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn contains_overlap(&self) -> bool {
+        self.0.overlaps(&self.1)
     }
 }
 
