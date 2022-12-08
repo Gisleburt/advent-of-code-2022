@@ -1,6 +1,6 @@
-use std::io::BufRead;
 use crate::data_structure::RingBuffer;
 use crate::input::string_iter::StringIter;
+use std::io::BufRead;
 
 pub fn run<R: BufRead>(buf_read: R) -> String {
     let stream = StringIter::<String, _>::from(buf_read).next().unwrap();

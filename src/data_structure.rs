@@ -124,13 +124,14 @@ impl<T: PartialEq> RingBuffer<T> {
     /// assert_eq!(ring_buffer.contains_duplicates(), true);
     /// ```
     pub fn contains_duplicates(&self) -> bool {
-        self.buffer.iter().enumerate().any(|(i, v1)| {
-            self.buffer.iter().skip(i+1).any(|v2| v1 == v2)
-        })
+        self.buffer
+            .iter()
+            .enumerate()
+            .any(|(i, v1)| self.buffer.iter().skip(i + 1).any(|v2| v1 == v2))
     }
 }
 
-impl<T: Add<Output=T> + Default + Copy> RingBuffer<T> {
+impl<T: Add<Output = T> + Default + Copy> RingBuffer<T> {
     /// For data types that can be added together, this will get the total value of the buffer
     /// ```rust
     /// use advent_of_code_2022::data_structure::RingBuffer;

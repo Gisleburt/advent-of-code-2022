@@ -25,6 +25,6 @@ pub mod d22;
 pub mod d23;
 pub mod d24;
 pub mod d25;
+pub mod data_structure;
 pub mod domain;
 pub mod input;
-pub mod data_structure;

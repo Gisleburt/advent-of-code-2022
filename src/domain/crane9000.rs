@@ -1,9 +1,9 @@
-use std::cmp::max;
-use std::ops::Deref;
-use std::str::FromStr;
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::cmp::max;
+use std::ops::Deref;
+use std::str::FromStr;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Move {
@@ -33,11 +33,13 @@ impl FromStr for Move {
         lazy_static! {
             static ref MOVE_RE: Regex = Regex::new(r"^move (\d+) from (\d+) to (\d+)$").unwrap();
         }
-        let caps = MOVE_RE.captures(s).ok_or_else(|| format!("String not a move instruction: {}", s))?;
+        let caps = MOVE_RE
+            .captures(s)
+            .ok_or_else(|| format!("String not a move instruction: {}", s))?;
         Ok(Self {
             amount: caps.get(1).unwrap().as_str().parse().unwrap(),
             from: caps.get(2).unwrap().as_str().parse().unwrap(),
-            to: caps.get(3).unwrap().as_str().parse().unwrap()
+            to: caps.get(3).unwrap().as_str().parse().unwrap(),
         })
     }
 }
@@ -212,9 +214,7 @@ impl Stacks {
     /// # }
     /// ```
     pub fn largest_stack_size(&self) -> usize {
-        self.0.iter().fold(0, |acc, cur| {
-            max(acc, cur.0.len())
-        })
+        self.0.iter().fold(0, |acc, cur| max(acc, cur.0.len()))
     }
 }
 
@@ -245,12 +245,17 @@ impl From<Vec<String>> for Stacks {
         let mut stacks = vec![Stack::default(); len];
 
         for string in iter {
-            let crates: Vec<String> = string.chars().chunks(4).into_iter().map(|chunk| chunk.collect()).collect();
+            let crates: Vec<String> = string
+                .chars()
+                .chunks(4)
+                .into_iter()
+                .map(|chunk| chunk.collect())
+                .collect();
             for (i, string) in crates.iter().enumerate() {
                 let c = string.chars().nth(1).unwrap();
                 match c {
-                    'A'..= 'Z' | 'a'..='z' => stacks[i].0.push(c),
-                    _ => {},
+                    'A'..='Z' | 'a'..='z' => stacks[i].0.push(c),
+                    _ => {}
                 }
             }
         }

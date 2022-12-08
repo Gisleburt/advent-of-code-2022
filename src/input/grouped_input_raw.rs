@@ -47,8 +47,9 @@ impl<R: BufRead> Iterator for GroupedInputRaw<R> {
             if trimmed.is_empty() {
                 break;
             }
-            let line = buffer.strip_suffix("\r\n")
-                .or(buffer.strip_suffix("\n"))
+            let line = buffer
+                .strip_suffix("\r\n")
+                .or_else(|| buffer.strip_suffix('\n'))
                 .unwrap_or(&buffer)
                 .to_string();
             group.push(line);
